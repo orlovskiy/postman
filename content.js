@@ -1,5 +1,15 @@
 var storage = JSON.parse(localStorage.getItem('vkStorage'))
+
+chrome.runtime.onMessage.addListener(
+	function(request, sender, sendResponse){
+		console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+    if (request.greeting == "hello")
+      sendResponse({farewell:localStorage.getItem('vkStorage')});
+	})
 window.onload = function(){setButtons()}
+
 /*Расширение интерфейса страницы кнопками*/
 var lastLength = 0; //Переменная, в которую записывается количество уже созданных кнопок, что бы при добавлении контента кнопки создавались только у "новых" записей
 function setButtons(){

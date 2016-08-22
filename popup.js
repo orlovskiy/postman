@@ -1,30 +1,14 @@
 	
 /*скроллящий скрипт*/
 	var n = 0;
-function search(postId){
-	window.scrollTo(0,document.body.scrollHeight);
-	if(document.getElementById('show_more_link')){
-		document.getElementById('show_more_link').click()
-	}
-	if(document.getElementById(postId)!=null){
-		n = 1;
-		document.getElementById(postId).scrollIntoView()
-	}
-}
-
-var searcher = setInterval(function(){//здесь мог бы быть while(n!=1){...}, но, как я говорил, он отказался работать
-	search();
-	if(n==1){
-		clearInterval(searcher);
-}
-	},10)
-
-
-
-
-
-	var items = JSON.parse(localStorage.getItem('vkStorage')); //получаем хранилище
-	for(var i in items){ // перебираем его и вытаскиваем все элементы в переменные
+/*chrome.runtime.sendMessage('mlllmhidojoohpbfojoobfihoalnipam',{greeting: "hello"}, function(response) {
+  console.log(response.farewell);
+});*/
+chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
+    console.log(JSON.parse(response.farewell));
+    var items = JSON.parse(response.farewell);
+    for(var i in items){ // перебираем его и вытаскиваем все элементы в переменные
 		console.log(items[i])
 		var postId = i;
 		var item = items[i];
@@ -56,8 +40,36 @@ var searcher = setInterval(function(){//здесь мог бы быть while(n!
 		document.getElementById('links').appendChild(link); //готовый блок элемента помещается в существуюший в popup.html блок
 
 		go_button.onclick = function(){//по клику открываем adress и ищем там блок с id 'postId'
-			window.open(adress)
-			search(postId)
+			chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
+    console.log(JSON.parse(response.farewell));
+  })
+})
 			}
 		}//операции повторяются для каждого элемента хранилища
+  });
+});
+function search(postId){
+	window.scrollTo(0,document.body.scrollHeight);
+	if(document.getElementById('show_more_link')){
+		document.getElementById('show_more_link').click()
+	}
+	if(document.getElementById(postId)!=null){
+		n = 1;
+		document.getElementById(postId).scrollIntoView()
+	}
+}
+
+var searcher = setInterval(function(){//здесь мог бы быть while(n!=1){...}, но, как я говорил, он отказался работать
+	search();
+	if(n==1){
+		clearInterval(searcher);
+}
+	},10)
+
+
+
+
+
+	
 
