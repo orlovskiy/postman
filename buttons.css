@@ -1,0 +1,23 @@
+
+.markButton{
+	border:none;
+	outline:none;
+	background: url('http://work4psycho.ru/bookmark.png') no-repeat;
+	background-size: 60%;
+	padding-left: 32px;
+	width:36px;
+	height:36px;
+	position:relative;
+}
+.markButton:active{
+	outline: none;
+	border:none;
+}
+/*.postmanButtonlabel{
+	width:140px;
+	height:120px;
+	position:absolute;
+	top:50px;
+	right:0;
+	background-color:red;
+}*/

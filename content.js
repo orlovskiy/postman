@@ -1,13 +1,44 @@
-var storage = JSON.parse(localStorage.getItem('vkStorage'))
+function insertAfter(elem, refElem) {
+  return refElem.parentNode.insertBefore(elem, refElem.nextSibling);
+}
+var storage = JSON.parse(localStorage.getItem('vkStorage'))||{};
+var n = 0;
+function search(postId){
+	window.scrollTo(0,document.body.scrollHeight);
+	if(document.getElementById('show_more_link')){
+		document.getElementById('show_more_link').click()
+	}
+	if(document.getElementById(postId)!=null){
+		n = 1;
+		document.getElementById(postId).scrollIntoView()
+	}
+}
+
+imgReg = /http[^\s]*\.jpg/g;
+
+
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse){
-		console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
-    if (request.greeting == "hello")
+    if (request.greeting == "hello"){
       sendResponse({farewell:localStorage.getItem('vkStorage')});
-	})
+    }
+    else if(request.post){
+    	console.log(request.post);
+    
+		var searcher = setInterval(function(){//здесь мог бы быть while(n!=1){...}, но, как я говорил, он отказался работать
+			search(request.post);
+
+			if(n==1){
+				clearInterval(searcher);
+		}
+			},10);
+	}
+})
+
+
+
+
 window.onload = function(){setButtons()}
 
 /*Расширение интерфейса страницы кнопками*/
@@ -17,30 +48,36 @@ function setButtons(){
 	for (var i = lastLength;i < targets.length;i++){
 		targets[i].style.position = 'relative' //нужно для позиционирования кнопки, впоследствии можно переделать
 		var button = document.createElement('button');
+/*		var label = document.createElement('label');
+		label.setAttribute('className','postmanButtonlabel');*/
 		var trueId = i + 1; 
+/*		label.setAttribute('for','mark'+trueId)
+		label.innerHTML = 'заложить';*/
 		button.setAttribute('id','mark'+trueId);// присвоил для какой-то проверки, но пусть пока тут поторчит
 		button.setAttribute('class','markButton');
-		button.innerHTML = 'нажми!';
-		button.style.cssText =
-			"width:200px;\
-			position:absolute;\
-			top:50px;\
-			right:0;\
-			height:50px;\
-			background-color:red;";
+		button.innerHTML = 'Заложить'
+		var itemId = targets[i].firstChild.id;
+		var text = targets[i].firstChild.innerHTML;
+		button.value = JSON.stringify({'id':itemId, 'text':text})
 			if(storage[targets[i].childNodes[0].id]){ 
 				button.style.backgroundColor = 'green'; //Если данный id имеется в объекте storage, то кнопка будет иметь зеленый bgc
 			}
+
+
 		button.onclick = function(){ //вешаем обработчик на click
-			this.style.backgroundColor = 'green';
+			var data = JSON.parse(this.value);
+			this.innerHTML = 'Заложено';
 			var adress = window.location.href;
-			var itemId = this.previousSibling.id;
+			var itemId = data['id'];
+			var text = data['text'];
 			var url = window.location.href + '?w=wall-' + itemId.split('post');
-			var images = this.previousSibling.getElementsByTagName('img');
-			var icon = images[0].getAttribute('src');// иконка разместившего новость пользователя
-			var pic = images[1].getAttribute('src')||null; // картинка из новости, если есть
+			var images = text.match(imgReg);
+			console.log(text)
+			console.log(images)
+			var icon = images[0]// иконка разместившего новость пользователя
+			var pic = images[1]// картинка из новости, если есть
 			if (storage[itemId]){ // если элемент уже имеется в объекте storage  - дается команда на его удаление и bgc принимает значение "red"
-				this.style.backgroundColor = 'red';
+				this.innerHTML='Заложить';
 				delete storage[itemId]
 				localStorage.setItem('vkStorage',JSON.stringify(storage));
 			}else{
@@ -48,15 +85,27 @@ function setButtons(){
 				localStorage.setItem('vkStorage',JSON.stringify(storage));
 			}
 		}
+
+
 		var target = targets[i];
-		target.insertBefore(button,null)
-		lastLength = i;
+		// insertAfter(button, target.getElementsByClassName('post_full_like')[0]);
+		/*target.getElementsByClassName('post_share _share_wrap')[0].insertBefore(button,null)*/
+		// insertAfter(label,button)
+		try{
+			target.getElementsByClassName('post_full_like_wrap')[0].appendChild(button)
+		}catch(err){
+			console.log('ha-ha')
+		}
+		lastLength = i+1;
+
 	}
 }
 
 
 
-
+window.onscroll = function(){ //будет выполнятьяс при загрузке страницы и догрузке контента. Сейчас так, для отладки
+	setButtons()
+	}
 
 
 
@@ -69,7 +118,6 @@ function setButtons(){
 
 
 var b = document.getElementsByClassName('feed_row')
-console.log(b)
 	var items = JSON.parse(localStorage.getItem('vkStorage'));
 	console.log(items)
 	for(var i in items){
@@ -104,4 +152,3 @@ console.log(b)
 			search(postId)
 			}
 		}
-		console.log('xhr')

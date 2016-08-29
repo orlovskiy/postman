@@ -1,10 +1,16 @@
-
-#links{
-	width: 400px;
+html{
 	height: 400px;
+	overflow: auto;
+}
+body{
+	width: 300px; 
+	height: 100%;
+	overflow: auto;
 }
 .link{
-	position: relative;
+}
+#links{
+display: inline-block;
 }
 .icon{
 	display: inline-block;
@@ -15,9 +21,7 @@
 	width: 50px;
 	vertical-align: middle;
 }
-.go-button{
-	width: 200px;
+.go_button{
+	margin-left: 20px;
 	height: 50px;
-	background-color: red;
-
 }

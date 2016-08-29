@@ -32,6 +32,7 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		go_button.type = 'button';
 		go_button.className = 'go_button';
 		go_button.value = 'перейти';
+		go_button.id = i;
 
 		link.appendChild(icon_element)
 		link.appendChild(pic_element)
@@ -39,9 +40,10 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 
 		document.getElementById('links').appendChild(link); //готовый блок элемента помещается в существуюший в popup.html блок
 
-		go_button.onclick = function(){//по клику открываем adress и ищем там блок с id 'postId'
+		go_button.onclick = function(){
+			var postId = this.id;
 			chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-  chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
+  chrome.tabs.sendMessage(tabs[0].id, {post: postId}, function(response) {
     console.log(JSON.parse(response.farewell));
   })
 })
@@ -49,7 +51,7 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		}//операции повторяются для каждого элемента хранилища
   });
 });
-function search(postId){
+/*function search(postId){
 	window.scrollTo(0,document.body.scrollHeight);
 	if(document.getElementById('show_more_link')){
 		document.getElementById('show_more_link').click()
@@ -65,7 +67,7 @@ var searcher = setInterval(function(){//здесь мог бы быть while(n!
 	if(n==1){
 		clearInterval(searcher);
 }
-	},10)
+	},10)*/
 
 
 
