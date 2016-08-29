@@ -31,6 +31,7 @@ chrome.runtime.onMessage.addListener(
 
 			if(n==1){
 				clearInterval(searcher);
+				n = 0;
 		}
 			},10);
 	}
@@ -55,18 +56,22 @@ function setButtons(){
 		label.innerHTML = 'заложить';*/
 		button.setAttribute('id','mark'+trueId);// присвоил для какой-то проверки, но пусть пока тут поторчит
 		button.setAttribute('class','markButton');
-		button.innerHTML = 'Заложить'
+		button.innerHTML = 'Закладка'
 		var itemId = targets[i].firstChild.id;
 		var text = targets[i].firstChild.innerHTML;
 		button.value = JSON.stringify({'id':itemId, 'text':text})
 			if(storage[targets[i].childNodes[0].id]){ 
-				button.style.backgroundColor = 'green'; //Если данный id имеется в объекте storage, то кнопка будет иметь зеленый bgc
+				button.innerHTML='Закладка';
+				button.style.background = "url('http://work4psycho.ru/bookmarked.png') 10% 50% no-repeat";
+				button.style.backgroundSize = "17%"; //Если данный id имеется в объекте storage, то кнопка будет иметь зеленый bgc
 			}
 
 
 		button.onclick = function(){ //вешаем обработчик на click
 			var data = JSON.parse(this.value);
-			this.innerHTML = 'Заложено';
+			this.innerHTML = 'Закладка';
+			this.style.background = "url('http://work4psycho.ru/bookmarked.png') 10% 50% no-repeat";
+			this.style.backgroundSize = "17%";
 			var adress = window.location.href;
 			var itemId = data['id'];
 			var text = data['text'];
@@ -77,7 +82,9 @@ function setButtons(){
 			var icon = images[0]// иконка разместившего новость пользователя
 			var pic = images[1]// картинка из новости, если есть
 			if (storage[itemId]){ // если элемент уже имеется в объекте storage  - дается команда на его удаление и bgc принимает значение "red"
-				this.innerHTML='Заложить';
+				this.innerHTML='Закладка';
+				this.style.background = "url('http://work4psycho.ru/bookmark.png') 10% 50% no-repeat";
+				this.style.backgroundSize = "17%";
 				delete storage[itemId]
 				localStorage.setItem('vkStorage',JSON.stringify(storage));
 			}else{

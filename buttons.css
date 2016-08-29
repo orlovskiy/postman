@@ -1,15 +1,26 @@
-
+.markButton:hover{
+	background-color: #f2f4f7;
+}
 .markButton{
+	color:#507299;
+	cursor:pointer;
+	font-size: 12px;
+	display: inline-block;
+	border-radius: 2px;
+	margin-left: 5px;
+	vertical-align: middle;
 	border:none;
 	outline:none;
-	background: url('http://work4psycho.ru/bookmark.png') no-repeat;
-	background-size: 60%;
-	padding-left: 32px;
-	width:36px;
-	height:36px;
+	background: url('http://work4psycho.ru/bookmark.png') 10% 50% no-repeat;
+	background-size: 17%;
+	padding-left: 24px;
+	width:110px;
+	height:24px;
 	position:relative;
 }
 .markButton:active{
+	background: url('http://work4psycho.ru/bookmark.png') 10% 50% no-repeat;
+	background-size: 17%;
 	outline: none;
 	border:none;
 }
